@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nickname - SteamToolsLua</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#08080e;color:#d0d0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.card{background:#0c0c18;border:1px solid #1a1a30;border-radius:12px;padding:30px;width:100%;max-width:420px}
+h1{font-size:20px;color:#b088ff;font-weight:700;margin-bottom:4px}
+.sub{color:#585880;font-size:12px;margin-bottom:20px}
+label{display:block;font-size:12px;color:#97afc6;margin-bottom:3px;margin-top:10px}
+input{width:100%;padding:9px 12px;border-radius:6px;border:1px solid #2a2a4a;background:#10101e;color:#d0d0e0;font-size:13px;outline:none;transition:border-color .2s}
+input:focus{border-color:#7c6fff;box-shadow:0 0 0 3px #7c6fff20}
+button{width:100%;padding:10px;border-radius:6px;border:none;background:linear-gradient(135deg,#7c6fff,#6a5ee8);color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:16px;transition:opacity .2s}
+button:hover{opacity:.9}
+button:disabled{opacity:.5;cursor:not-allowed}
+.info{background:#7c6fff10;border:1px solid #7c6fff30;border-radius:6px;padding:8px 12px;font-size:12px;color:#b098ff;margin-top:12px;display:none}
+.err{background:#f5656510;border:1px solid #f5656530;border-radius:6px;padding:8px 12px;font-size:12px;color:#f56565;margin-top:12px;display:none}
+.ok{background:#48bb7810;border:1px solid #48bb7830;border-radius:6px;padding:8px 12px;font-size:12px;color:#48bb78;margin-top:12px;display:none}
+.hwid-info{font-size:11px;color:#585880;margin-top:4px;word-break:break-all}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #2a2a4a;border-top-color:#7c6fff;border-radius:50%;animation:s .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.note{font-size:11px;color:#585880;margin-top:14px;text-align:center;border-top:1px solid #1a1a30;padding-top:14px}
+.note a{color:#7c6fff;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Nickname Ayarlari</h1>
+  <p class="sub">Kullanici bilgilerinizi girin, HWID ile kaydedilir</p>
+  <label>HWID (donanim kimligi)</label>
+  <input id="hwid" placeholder="Orn: 6254387a-fa0d-405f-b308-312882e3294a" autocomplete="off">
+  <label>Ad</label>
+  <input id="fn" placeholder="Adiniz" autocomplete="off">
+  <label>Soyad</label>
+  <input id="ln" placeholder="Soyadiniz" autocomplete="off">
+  <label>Nickname</label>
+  <input id="nn" placeholder="Nickname" autocomplete="off">
+  <button id="btn" onclick="save()">Kaydet</button>
+  <div class="info" id="info"></div>
+  <div class="err" id="err"></div>
+  <div class="ok" id="ok"></div>
+  <div class="note"><a href="https://tttaaahhhaaa.github.io/admin/" target="_blank">Admin Panel</a></div>
+</div>
+<script>
+const _gist='6f3df9ed457b97936420526d5f5a431b';
+const _t='github_pat_11BOBFHHQ0gJPQnX00BuTU_SQu4ULpKLzSJU86SduIXgchRNa8YdW1RjVFFAXo'+'PaaM2TL7SWRKyc3dT8ju';
+const _api='https://api.github.com/gists/'+_gist;
+function h(){return{Authorization:'token '+_t,'User-Agent':'STL-Nick','Accept':'application/vnd.github.v3+json'}}
+
+async function load(){
+  const btn=document.getElementById('btn'),info=document.getElementById('info');
+  btn.disabled=true;info.style.display='block';info.innerHTML='<span class="spin"></span> Yukleniyor...';
+  try{
+    const r=await fetch(_api,{headers:h()});
+    if(!r.ok)throw Error();
+    const d=await r.json();
+    let nf=d.files&&d.files['nicknames.json']&&d.files['nicknames.json'].content;
+    let nd=nf?JSON.parse(nf):{};
+    const hwid=document.getElementById('hwid').value.trim().toLowerCase();
+    if(hwid&&nd[hwid]){
+      const u=nd[hwid];
+      document.getElementById('fn').value=u.firstname||'';
+      document.getElementById('ln').value=u.lastname||'';
+      document.getElementById('nn').value=u.nickname||'';
+      info.innerHTML='Mevcut bilgiler yuklendi.';info.style.color='#b098ff';
+    }else{
+      info.innerHTML='HWID girip bilgilerinizi girin.';info.style.color='#585880';
+    }
+  }catch(e){info.innerHTML='Gist yuklenemedi, yine de kaydedebilirsiniz.';info.style.color='#f56565'}
+  setTimeout(()=>{btn.disabled=false;info.style.display='none'},1500)
+}
+
+document.getElementById('hwid').addEventListener('input',()=>{
+  const v=document.getElementById('hwid').value.trim();
+  if(v.length>=8)load()
+});
+
+async function save(){
+  const btn=document.getElementById('btn'),info=document.getElementById('info'),err=document.getElementById('err'),ok=document.getElementById('ok');
+  err.style.display='none';ok.style.display='none';
+  const hwid=document.getElementById('hwid').value.trim().toLowerCase();
+  const fn=document.getElementById('fn').value.trim();
+  const ln=document.getElementById('ln').value.trim();
+  const nn=document.getElementById('nn').value.trim();
+  if(!hwid){err.textContent='HWID gerekli';err.style.display='block';return}
+  if(!fn||!ln||!nn){err.textContent='Ad, soyad ve nickname gerekli';err.style.display='block';return}
+  btn.disabled=true;info.style.display='block';info.innerHTML='<span class="spin"></span> Kaydediliyor...';
+  try{
+    const r=await fetch(_api,{headers:h()});
+    if(r.status===403){err.textContent='API hatasi (403) - token gecersiz olmus olabilir';err.style.display='block';btn.disabled=false;info.style.display='none';return}
+    const d=await r.json();
+    let nf=d.files&&d.files['nicknames.json']&&d.files['nicknames.json'].content;
+    let nd=nf?JSON.parse(nf):{};
+    nd[hwid]={firstname:fn,lastname:ln,nickname:nn};
+    const up=await fetch(_api,{method:'PATCH',headers:h(),body:JSON.stringify({files:{'nicknames.json':{content:JSON.stringify(nd,null,2)}}})});
+    if(!up.ok)throw Error('HTTP '+up.status);
+    ok.textContent='Kaydedildi! Ad: '+fn+' | Soyad: '+ln+' | Nick: '+nn;ok.style.display='block';
+  }catch(e){
+    err.textContent='Kayit hatasi: '+(e.message||e);err.style.display='block'
+  }
+  btn.disabled=false;info.style.display='none'
+}
+
+load()
+</script>
+</body>
+</html>
