@@ -3,224 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SteamToolsLua - All-in-One Injector + CloudRedirect</title>
+<title>SteamToolsLua</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#06060c;color:#e0e0f0;font-family:Inter,Segoe UI,sans-serif;min-height:100vh}
-.bg-glow{position:fixed;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(124,111,255,.08) 0%,transparent 70%);pointer-events:none;z-index:0}
-.bg-glow2{position:fixed;bottom:-300px;left:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(176,152,255,.05) 0%,transparent 70%);pointer-events:none;z-index:0}
-.container{max-width:900px;width:100%;padding:50px 24px;position:relative;z-index:1;margin:0 auto}
-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:50px}
-nav .logo{font-size:18px;font-weight:700;color:#b098ff;letter-spacing:-.5px}
-nav .logo span{color:#7c6fff}
-nav .links{display:flex;gap:20px}
-nav .links a{color:#686880;font-size:13px;text-decoration:none;transition:color .2s}
-nav .links a:hover{color:#b098ff}
-.hero{text-align:center;padding:30px 0 50px}
-.hero .icon{font-size:72px;margin-bottom:16px;display:block;filter:grayscale(.3)}
-.hero h1{font-size:48px;font-weight:800;color:#f0f0ff;letter-spacing:-2px;line-height:1.1;margin-bottom:8px}
-.hero h1 span{background:linear-gradient(135deg,#7c6fff,#b098ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero .sub{color:#686880;font-size:16px;margin-bottom:6px;max-width:500px;margin-left:auto;margin-right:auto}
-.hero .tags{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-.hero .tags span{background:#7c6fff10;border:1px solid #7c6fff30;color:#7c6fff;font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500}
-.dl-section{background:linear-gradient(135deg,#0a0a16,#0e0e24);border:1px solid #1a1a38;border-radius:16px;padding:40px;margin-bottom:30px;text-align:center}
-.dl-section .label{font-size:12px;color:#7c6fff;text-transform:uppercase;letter-spacing:3px;font-weight:600;margin-bottom:4px}
-.dl-section .version{font-size:56px;font-weight:800;color:#f0f0ff;letter-spacing:-2px;margin-bottom:2px}
-.dl-section .version .loading{opacity:.3}
-.dl-section .date{color:#585878;font-size:14px;margin-bottom:24px}
-.dl-section .dl-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.dl-btn{display:inline-flex;align-items:center;gap:12px;padding:18px 44px;border-radius:12px;border:none;background:linear-gradient(135deg,#7c6fff,#9b8fff);color:#fff;font-size:18px;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
-.dl-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 40px rgba(124,111,255,.35)}
-.dl-btn:active{transform:translateY(0) scale(.98)}
-.dl-btn .icon{font-size:24px}
-.dl-btn .meta{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
-.dl-btn .meta .small{font-size:12px;font-weight:400;opacity:.7}
-.dl-btn-gh{display:inline-flex;align-items:center;gap:8px;padding:18px 28px;border-radius:12px;border:1px solid #2a2a5a;background:#0a0a16;color:#e0e0f0;font-size:15px;font-weight:500;cursor:pointer;text-decoration:none;transition:background .2s,border-color .2s}
-.dl-btn-gh:hover{background:#14142a;border-color:#7c6fff;color:#b098ff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0}
-.card{background:#0a0a14;border:1px solid #1a1a38;border-radius:10px;padding:22px;transition:border-color .2s,transform .2s}
-.card:hover{border-color:#2a2a5a;transform:translateY(-2px)}
-.card .icon{font-size:28px;margin-bottom:8px;display:block}
-.card h3{color:#e0e0f0;font-size:15px;font-weight:600;margin-bottom:4px}
-.card p{color:#686880;font-size:13px;line-height:1.5}
-.changelog{background:#0a0a14;border:1px solid #1a1a38;border-radius:12px;padding:28px;margin-bottom:30px}
-.changelog .ch-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.changelog .ch-hdr h3{color:#b098ff;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
-.changelog .ch-hdr a{color:#7c6fff;font-size:12px;text-decoration:none}
-.changelog .ch-hdr a:hover{text-decoration:underline}
-.changelog ul{list-style:none}
-.changelog li{padding:6px 0;font-size:14px;color:#c8c8d8;line-height:1.5;border-bottom:1px solid #0e0e1e}
-.changelog li:last-child{border-bottom:none}
-.changelog li .tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;margin-right:8px;font-weight:600;text-transform:uppercase;vertical-align:middle}
-.tag-new{background:#48bb7820;color:#48bb78;border:1px solid #48bb7840}
-.tag-fix{background:#7c6fff20;color:#7c6fff;border:1px solid #7c6fff40}
-.tag-upd{background:#f6ad5520;color:#f6ad55;border:1px solid #f6ad5540}
-footer{margin-top:50px;padding:30px 0;border-top:1px solid #0e0e1e;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-footer .cr{color:#585878;font-size:13px}
-footer .flinks{display:flex;gap:16px}
-footer .flinks a{color:#686880;font-size:13px;text-decoration:none;transition:color .2s}
-footer .flinks a:hover{color:#b098ff}
-.admin-fab{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:#0a0a16;border:1px solid #2a2a5a;color:#686880;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:18px;transition:all .2s;z-index:10}
-.admin-fab:hover{background:#1c1c3a;border-color:#7c6fff;color:#b098ff;transform:scale(1.1)}
-.spinner{display:inline-block;width:24px;height:24px;border:3px solid #2a2a5a;border-top-color:#7c6fff;border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.error{color:#f56565;padding:20px;font-size:14px}
-@media(max-width:650px){.hero h1{font-size:32px}.grid{grid-template-columns:1fr}.dl-section{padding:24px}.dl-section .version{font-size:36px}.dl-btn{padding:14px 28px;font-size:15px}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#08080e;color:#e0e0f0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;justify-content:center;padding:20px}
+.container{max-width:600px;width:100%;text-align:center}
+h1{font-size:36px;color:#b098ff;margin-bottom:8px;font-weight:700}
+.sub{color:#686880;font-size:15px;margin-bottom:30px}
+.card{background:#0a0a16;border:1px solid #1a1a38;border-radius:12px;padding:32px;margin-bottom:16px}
+.card .ver{font-size:48px;font-weight:700;margin-bottom:4px}
+.card .ver.load{opacity:.4}
+.card .date{color:#686880;font-size:13px;margin-bottom:20px}
+.dl{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;border-radius:8px;border:none;background:linear-gradient(135deg,#7c6fff,#b098ff);color:#fff;font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .2s}
+.dl:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(124,111,255,.3)}
+.dl .sz{font-size:12px;font-weight:400;opacity:.7}
+.spin{display:inline-block;width:20px;height:20px;border:3px solid #2a2a5a;border-top-color:#7c6fff;border-radius:50%;animation:s .6s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{color:#f56565}
+footer{margin-top:40px;color:#585878;font-size:12px}
+footer a{color:#7c6fff;text-decoration:none}
 </style>
 </head>
 <body>
-<div class="bg-glow"></div>
-<div class="bg-glow2"></div>
-
 <div class="container">
-  <nav>
-    <div class="logo">Steam<span>Tools</span>Lua</div>
-    <div class="links">
-      <a href="https://github.com/tttaaahhhaaa/SteamToolsLua" target="_blank">GitHub</a>
-      <a href="https://tttaaahhhaaa.github.io/admin/" target="_blank">Admin</a>
-    </div>
-  </nav>
-
-  <div class="hero">
-    <span class="icon">&#9881;</span>
-    <h1><span>SteamToolsLua</span></h1>
-    <p class="sub">All-in-One Injector + CloudRedirect &mdash; tek tıkla oyunlarına OnlineFix enjekte et</p>
-    <div class="tags">
-      <span>Auto-Inject</span>
-      <span>CloudRedirect</span>
-      <span>AI Assistant</span>
-      <span>Multi-Language</span>
-    </div>
+  <h1>SteamToolsLua</h1>
+  <p class="sub">All-in-One Injector + CloudRedirect</p>
+  <div class="card">
+    <div class="ver" id="ver"><span class="spin"></span></div>
+    <div class="date" id="date"></div>
+    <a class="dl" id="dl" href="#"><span>&#11015;</span> Download <span id="dlv"></span> <span class="sz" id="sz"></span></a>
   </div>
-
-  <div class="dl-section" id="dl-section">
-    <div class="label">Latest Release</div>
-    <div class="version" id="ver-display"><span class="spinner"></span></div>
-    <div class="date" id="date-display">Loading version info...</div>
-    <div class="dl-row">
-      <a class="dl-btn" id="dl-btn" href="#" target="_blank">
-        <span class="icon">&#11015;</span>
-        <span class="meta">
-          <span>Download <span id="dl-ver"></span></span>
-          <span class="small" id="dl-size"></span>
-        </span>
-      </a>
-      <a class="dl-btn-gh" href="https://github.com/tttaaahhhaaa/SteamToolsLua/releases" target="_blank">
-        <span>&#128196;</span> All Releases
-      </a>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <span class="icon">&#9889;</span>
-      <h3>Auto-Inject</h3>
-      <p>Tek tıkla tüm oyunlarına OnlineFix enjekte et. Zip'leri otomatik tanır, Steam restart gerektiğinde bildirir.</p>
-    </div>
-    <div class="card">
-      <span class="icon">&#9729;</span>
-      <h3>CloudRedirect</h3>
-      <p>Yerleşik CloudRedirect desteği. Çok oyunculu oyunlar için sorunsuz entegrasyon.</p>
-    </div>
-    <div class="card">
-      <span class="icon">&#129302;</span>
-      <h3>AI Assistant</h3>
-      <p>Gömülü AI sohbet asistanı. Provider chain desteği ile otomatik yedekleme.</p>
-    </div>
-    <div class="card">
-      <span class="icon">&#127759;</span>
-      <h3>Multi-Language</h3>
-      <p>Türkçe, English, Español, Français, Deutsch, 日本語 — tam arayüz desteği.</p>
-    </div>
-    <div class="card">
-      <span class="icon">&#128274;</span>
-      <h3>Library Manager</h3>
-      <p>Enjekte edilen oyunların kütüphanesi. Oyunları listele, sırala, klasörünü aç.</p>
-    </div>
-    <div class="card">
-      <span class="icon">&#128260;</span>
-      <h3>Auto-Update</h3>
-      <p>Yeni sürüm yayınlandığında otomatik bildirim. Tek tıkla güncelle.</p>
-    </div>
-  </div>
-
-  <div class="changelog" id="changelog">
-    <div class="ch-hdr">
-      <h3>What's New</h3>
-      <a href="https://github.com/tttaaahhhaaa/SteamToolsLua/releases" target="_blank">View all &rarr;</a>
-    </div>
-    <ul id="changelog-list">
-      <li><span class="spinner"></span> Loading changelog...</li>
-    </ul>
-  </div>
-
-  <footer>
-    <div class="cr">SteamToolsLua &copy; 2026 &middot; v<span id="footer-ver">?</span></div>
-    <div class="flinks">
-      <a href="https://github.com/tttaaahhhaaa/SteamToolsLua" target="_blank">GitHub</a>
-      <a href="https://github.com/tttaaahhhaaa/SteamToolsLua/releases" target="_blank">Releases</a>
-      <a href="https://tttaaahhhaaa.github.io/admin/" target="_blank">Admin</a>
-    </div>
-  </footer>
+  <div style="margin-top:8px;color:#686880;font-size:13px">Admin panel changed.</div>
 </div>
-
-<a class="admin-fab" href="https://tttaaahhhaaa.github.io/admin/" target="_blank" title="Admin Panel">&#128272;</a>
-
+<footer><a href="https://github.com/tttaaahhhaaa/SteamToolsLua" target="_blank">GitHub</a></footer>
 <script>
-const API = 'https://api.github.com/repos/tttaaahhhaaa/SteamToolsLua/releases/latest';
-
-(async function load() {
-  try {
-    const r = await fetch(API, { headers: { 'User-Agent': 'SteamToolsLuaSite', 'Accept': 'application/vnd.github.v3+json' } });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const data = await r.json();
-
-    const ver = (data.tag_name || '').replace(/^v/i, '') || '?';
-    document.getElementById('ver-display').textContent = 'v' + ver;
-    document.getElementById('dl-ver').textContent = 'v' + ver;
-    document.getElementById('footer-ver').textContent = ver;
-
-    const asset = data.assets && data.assets[0];
-    if (asset) {
-      document.getElementById('dl-btn').href = asset.browser_download_url;
-      const size = (asset.size / 1048576).toFixed(1);
-      document.getElementById('dl-size').textContent = '(' + size + ' MB · ' + (asset.download_count || 0) + ' downloads)';
-    } else {
-      document.getElementById('dl-btn').href = data.html_url;
-      document.getElementById('dl-size').textContent = '(go to release page)';
-    }
-
-    if (data.published_at) {
-      const d = new Date(data.published_at);
-      document.getElementById('date-display').textContent = 'Released ' + d.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-    }
-
-    if (data.body) {
-      const lines = data.body.split('\n').filter(l => l.trim() && !l.trim().startsWith('---') && !l.trim().startsWith('##'));
-      const ul = document.getElementById('changelog-list');
-      if (lines.length) {
-        ul.innerHTML = lines.map(l => {
-          const t = l.toLowerCase();
-          let tag = 'upd', tagLabel = 'UPD';
-          if (t.includes('new') || t.includes('add') || t.includes('eklen') || t.includes('yeni')) { tag = 'new'; tagLabel = 'NEW'; }
-          else if (t.includes('fix') || t.includes('düzelt') || t.includes('bug') || t.includes('hata')) { tag = 'fix'; tagLabel = 'FIX'; }
-          return '<li><span class="tag tag-' + tag + '">' + tagLabel + '</span>' + l.replace(/^[-*]\s*/,'').replace(/^`[^`]+`\s*/,'').trim() + '</li>';
-        }).join('');
-      } else {
-        ul.innerHTML = '<li>See release notes on <a href="https://github.com/tttaaahhhaaa/SteamToolsLua/releases" style="color:#7c6fff">GitHub</a></li>';
-      }
-    } else {
-      document.getElementById('changelog-list').innerHTML = '<li>See release notes on <a href="https://github.com/tttaaahhhaaa/SteamToolsLua/releases" style="color:#7c6fff">GitHub</a></li>';
-    }
-  } catch(e) {
-    console.error(e);
-    document.getElementById('ver-display').innerHTML = '<span class="error">Failed to load</span>';
-    document.getElementById('date-display').textContent = '';
-    document.getElementById('changelog-list').innerHTML = '<li><span class="error">Could not load changelog. <a href="https://github.com/tttaaahhhaaa/SteamToolsLua/releases" style="color:#7c6fff">View on GitHub</a></span></li>';
-    document.getElementById('dl-btn').href = 'https://github.com/tttaaahhhaaa/SteamToolsLua/releases';
+(async()=>{
+  try{
+    const r=await fetch('https://api.github.com/repos/tttaaahhhaaa/SteamToolsLua/releases/latest',{headers:{'User-Agent':'STL'}});
+    if(!r.ok)throw Error();
+    const d=await r.json();
+    const v=(d.tag_name||'').replace(/^v/i,'')||'?';
+    document.getElementById('ver').textContent='v'+v;
+    document.getElementById('dlv').textContent='v'+v;
+    const a=d.assets&&d.assets[0];
+    if(a){document.getElementById('dl').href=a.browser_download_url;document.getElementById('sz').textContent='('+(a.size/1048576).toFixed(1)+' MB)'}
+    else document.getElementById('dl').href=d.html_url;
+    if(d.published_at)document.getElementById('date').textContent=new Date(d.published_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})
+  }catch(e){
+    document.getElementById('ver').innerHTML='<span class="err">Failed to load</span>';
+    document.getElementById('dl').href='https://github.com/tttaaahhhaaa/SteamToolsLua/releases'
   }
-})();
+})()
 </script>
 </body>
 </html>
